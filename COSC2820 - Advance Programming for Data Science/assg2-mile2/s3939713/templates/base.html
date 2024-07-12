@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Market</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }} " type="text/css" media="all" />
+    <script src="{{ url_for('static', filename='jquery-3.6.1.js') }}"></script>
+</head>
+<body>
+<div id="menu">
+    <img src="{{ url_for('static', filename='job-search.png') }}" width="45px"/>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/category">Job Category</a></li>
+        <li><a href="/employer">Employer</a></li>
+    </ul>
+</div>
+{% block body %}
+{% endblock %}
+</body>
+</html>
+
+{#
+Job Search Icons created by Freepik
+<a href="https://www.flaticon.com/free-icons/job-search" title="job search icons">Job search icons created by Freepik - Flaticon</a>
+#}

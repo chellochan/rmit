@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block body %}
+<script>
+$(document).ready(function(){
+    $("#textbox_title").blur(function(event){
+        if($("#textbox_title").val() && $("#textarea_description").val()) {
+            event.preventDefault();
+
+            var $form = $( this ),
+            title = $form.find( "input[name='title']" ).val(),
+            description = $form.find( "input[name='description']" ).val(),
+            url = $form.attr( "employer/category/suggest" );
+            $("label").css("background-color", '');
+            var posting = $.post( 'employer/category/suggest', $('form').serialize() );
+
+            posting.done(function( data ) {
+                  $("label#radio_label_"+data).css("background-color", "yellow");
+                  $("label#radio_label_"+data).click();
+            });
+        }
+    });
+    $("#textarea_description").blur(function(event){
+        if($("#textarea_description").val() && $("#textarea_description").val()) {
+            event.preventDefault();
+
+            var $form = $( this ),
+            title = $form.find( "input[name='title']" ).val(),
+            description = $form.find( "input[name='description']" ).val(),
+            url = $form.attr( "employer/category/suggest" );
+            $("label").css("background-color", '');
+            var posting = $.post( 'employer/category/suggest', $('form').serialize() );
+
+            posting.done(function( data ) {
+                $("label#radio_label_"+data).css("background-color", "yellow");
+                $("label#radio_label_"+data).click();
+            });
+        }
+    });
+
+});
+</script>
+<h2>Enter a Job Advertisement</h2>
+<form action="/employer" method="POST">
+<div>
+    <div class="labels">Title:</div>
+    <div class="contents">
+        <input type="text" id="textbox_title" name="title" value="{{ title }}" required/>
+    </div>
+</div>
+<div>
+    <div class="labels">Company:</div>
+    <div class="contents">
+        <input type="text" id="textbox_company" name="company" value="{{ company }}" />
+    </div>
+</div>
+<div>
+    <div class="labels">Salary:</div>
+    <div class="contents">
+        <input type="text" id="textbox_salary" name="salary" value="{{ salary }}" />
+    </div>
+</div>
+<div>
+    <div class="labels">Description:</div>
+    <div class="contents">
+        <textarea type="text" id="textarea_description" name="description" required>{{ description }}</textarea>
+    </div>
+</div>
+<div>
+    <div class="labels">Category:</div>
+    <div class="contents">(Suggestion will be shown by highlighted label in yellow)</div>
+</div>
+<div>
+    <div class="labels"></div>
+    <div class="contents">
+        {% for job_cat in job_ad_category.keys()|sort %}
+        <div>
+            <input type="radio" id="radio_{{ job_cat }}" name="category" value="{{ job_cat }}"required/>
+            <label id="radio_label_{{ job_cat }}" for="radio_{{ job_cat }}">{{ job_ad_category[job_cat] }}</label>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div><input type="submit" value="Submit"/></div>
+</form>
+{% endblock %}

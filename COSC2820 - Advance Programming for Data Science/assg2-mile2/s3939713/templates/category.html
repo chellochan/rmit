@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h2>Job List by Categories</h2>
+{% for category in category_job_ad_dict.keys()|sort %}
+    <button id="button_{{ category }}" class="tablink" onclick="openPage('{{ category }}', this, 'black')">
+        {{ display_category_dict[category] }}
+    </button>
+{% endfor %}
+
+{% for category in category_job_ad_dict.keys()|sort %}
+    <div id="{{ category }}" class="tabcontent">
+    <h4>Total No. of Jobs in {{ display_category_dict[category] }}: {{ category_job_ad_dict[category]|length }}</h4>
+    {% for job_ad in category_job_ad_dict[category] %}
+        <ul>
+            <li>
+                <a class="job_ad_title" href="job/{{job_ad.get_web_index()}}" target="_self">{{ job_ad.get_title() }}</a>
+                <div class="job_ad_company">{{ job_ad.get_company() }}</div>
+                <div class="job_ad_desc">{{ job_ad.get_desc()[0:97] }}...</div>
+            </li>
+        </ul>
+    {% endfor %}
+    </div>
+{% endfor %}
+
+<script>
+function openPage(pageName,elmnt,color) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablink");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].style.backgroundColor = "";
+    }
+    document.getElementById(pageName).style.display = "block";
+    elmnt.style.backgroundColor = color;
+}
+
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("button_Accounting_Finance").click();
+</script>
+
+{% endblock %}
+
+{#
+Tabs design
+ref: https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
+#}

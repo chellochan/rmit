@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block body %}
+<h1>Welcome to Job Market</h1>
+<h2>Job List</h2>
+    <h4>Total No. of Jobs: {{ job_ad_list|length }}</h4>
+
+{% for job_ad in job_ad_list %}
+    <ul>
+        <li>
+            <a class="job_ad_title" href="job/{{job_ad.get_web_index()}}" target="_self">{{ job_ad.get_title() }}</a>
+            <div class="job_ad_company">{{ job_ad.get_company() }}</div>
+            <div class="job_ad_desc">{{ job_ad.get_desc()[0:97] }}...</div>
+        </li>
+    </ul>
+{% endfor %}
+{% endblock %}
