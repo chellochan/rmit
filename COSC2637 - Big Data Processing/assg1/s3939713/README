@@ -1,0 +1,23 @@
+# s3939713
+# Wing Hang Chan
+# COSC 2637/2633 Big Data Processing
+# Asssignment 1 - Taxi Trip Statistics
+
+## Initialization
+1. Paste hadoop-streaming-3.1.4.jar to the directory
+
+## Task 1
+1. cd to the directory
+2. run sh task1_run.sh
+
+## Task 2
+## Preparation 
+1. Paste the medoids.txt to the directory with k lines of medoids
+2. cd to the directory
+3. run sh task2_run.sh -k {k} -v {v}
+   run task2_run.sh with k and v param
+
+## Task3
+1. cd to the directory
+2. run sh task3_run.sh
+
