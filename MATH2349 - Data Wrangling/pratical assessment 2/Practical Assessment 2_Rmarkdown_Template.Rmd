@@ -1,0 +1,436 @@
+---
+title: "Data Wrangling (Data Preprocessing)"
+author: "Wing Hang Chan"
+subtitle: Practical assessment 2
+date: "26-May-022"
+output:
+  html_notebook: default
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+
+## **Setup**
+
+```{r}
+suppressMessages(library(dplyr))
+suppressMessages(library(kableExtra))
+suppressMessages(library(lubridate))
+library(magrittr)
+library(MVN)
+library(readr)
+library(readxl)
+library(outliers)
+library(stringr)
+```
+
+
+## **Student names, numbers and percentage of contributions**
+```{r, echo=FALSE}
+
+# Add your names, numbers and percentage of your contribution here.
+
+na<- c("Wing Hang, Chan")
+no<- c("S3939713")
+pc<- c("100%")
+
+s<- data.frame(cbind(na,no,pc))
+colnames(s)<- c("Student name", "Student number", "Percentage of contribution")
+
+s %>% kbl(caption = "Group information") %>%
+  kable_classic(full_width = F, html_font = "Cambria")
+
+```
+<br>
+<br>
+
+## **Executive Summary**
+
+Data set has been downloaded to the local machine and save to a directory which is near the R source code. The R code studio then has to locate the working directory with the data set saved.
+<br>
+<b><i>read_csv</i></b> and <b><i>read_xlsx</i></b> functions are used to read the data set which are provided by readr and readxl library respectively. <b><i>merge</i></b> function is used for joining two data frames to meet the minimum requirement 1. Then, <b><i>as.factor</i></b> function is chosen for transforming a row data from character to ordered factors. as.<b><i>date</i></b> is also run for converting time to date for requirement 2-4. A function is created to replace value of 0 to na with <b><i>mutate</i></b> and <b><i>across</i></b> functions. <b><i>unique</i></b> is applied for checking the distinct ID. <b><i>mutate</i></b> is called to transform and create new columns. <b><i>is.na</i></b> function is used for checking na value in columns. Those functions are used to fulfill the requirement 5-7. <b><i>boxplot</i></b> function is used for plotting a visual graph to spot the outliers. MVN package is also applied for detecting outliers to meet requirement 9. <b><i>log</i></b>, <b><i>scale</i></b> and <b><i>hist</i></b> are used for normalization of data and showing a balanced chart which achieves requirement 9. Requirement 10 must be satisfy by importing the libraries for those functions.
+<br>
+Finally, the step of pre-processing should be reshuffled. The separated dataset should be tidy up before they are being merged. It is because after merging, there may be more duplicated rows and processing time will be longer.
+<br>
+<br>
+
+## **Data**
+
+Found a rental properties collaboration data set from kaggle.com (kaggle.com 2020)
+The data set contains of 3 files, 2 csv files and 1 xlsx file.
+<br>
+Attribute <b>event_type</b> in user_activity table can be referred to abttribute <b>Event type</b> in event_types. <b>item_id</b> in user_activity can be referred to another <b>item_id</b> in user_activity. They are not merged in step 1, as to eliminate duplication data for next few steps. Detail data description describes as below tables.
+<br>
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 4px;
+}
+</style>
+<h4>property.csv</h4>
+<table>
+	<tr>
+	  <th>Name</th>
+	  <th>Description</th>
+	  <th>Type</th>
+	</tr>
+	<tr>
+		<td>item_id</td>
+		<td>Unique property id</td>
+		<td>character(36)</td>
+	</tr>
+	<tr>
+		<td>deposit</td>
+		<td>Bond of the property</td>
+		<td>number</td>
+	</tr>
+	<tr>
+		<td>monthly_rent</td>
+		<td>Price of rent the property</td>
+		<td>number</td>
+	</tr>
+	<tr>
+		<td>district_uuid</td>
+		<td>Location area unique id</td>
+		<td>character(36)</td>
+	</tr>
+	<tr>
+		<td>room_qty</td>
+		<td>Number of rooms</td>
+		<td>number</td>
+	</tr>
+	<tr>
+		<td>unit_area</td>
+		<td>area of house</td>
+		<td>number</td>
+	</tr>
+	<tr>
+		<td>has_elevator</td>
+		<td>Property has elevator or not</td>
+		<td>boolean</td>
+	</tr>
+	<tr>
+		<td>building_floor_count</td>
+		<td>Number of units in same floor</td>
+		<td>number</td>
+	</tr>
+	<tr>
+		<td>unit_floor</td>
+		<td>nth floor of the house</td>
+		<td>number</td>
+	</tr>
+	<tr>
+		<td>has_storage_area</td>
+		<td>Property include storage location or not</td>
+		<td>boolean</td>
+	</tr>
+	<tr>
+		<td>property_age</td>
+		<td>Age of the property</td>
+		<td>number</tr>
+	<tr>
+</table>
+<br/>
+<h4>user_activity.csv</h4>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+  </tr>
+  <tr>
+  	<td>item_id</td>
+  	<td>Unique property id</td>
+  	<td>character(36)</td>
+  </tr>
+  <tr>
+  	<td>user_id</td>
+  	<td>Unique user id</td>
+  	<td>character(36)</td>
+  </tr>
+  <tr>
+  	<td>event_type</td>
+  	<td>Log of user activity occured in each process step</td>
+  	<td>Factor of event type</td>
+  </tr>
+  <tr>
+  	<td>create_timestamp</td>
+  	<td>Timestamp of creating records</td>
+  	<td>Datetime</td>
+  </tr>
+</table>
+<br/>
+<h4>event_types.xlsx</h4>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Type</th>
+  </tr>
+  <tr>
+    <td>Step</td>
+    <td>Order of the series of events</td>
+    <td>number</td>
+  </tr>
+  <tr>
+    <td>Event type</td>
+    <td>Name of event</td>
+    <td>character</td>
+  </tr>
+  <tr>
+    <td>meaning</td>
+    <td>Description of event</td>
+    <td>character</td>
+  </tr>
+</table>
+<span style="font-size: 11px; font-style: italic;">
+Ref:
+kaggle.com 2020, Rental Properties Collaboration Data, Möbius, data file, AODC Public Domain Dedication and Licence (PDDL), <https://www.kaggle.com/datasets/arashnic/property-data>
+</span>
+```{r}
+getwd()
+setwd('/Users/chello/Desktop/RMIT/Math2349 - Data Wrangling/pratical assessment 2')
+property <- read_csv('data/property.csv')
+usr_act <- read_csv('data/user_activity.csv')
+evt_types <- read_excel('data/event_types.xlsx')
+
+head(property)
+head(usr_act)
+head(evt_types)
+
+# requirement 1
+usr_act_detail <- merge(x=usr_act, y=evt_types, 
+                by.x = c("event_type"), by.y = c("Event type") )
+head(usr_act_detail)
+
+# Do not merge here to avoid duplicate values for next steps
+# merged <- merge(x=property, y=usr_act, by = "item_id")
+```
+
+<br>
+<br>
+
+## **Understand** 
+
+
+```{r}
+# requirement 2
+c(evt_types['Event type'])
+evt_types_lv = evt_types[['Event type']]
+
+# requirement 3 & 4
+usr_act_detail$event_type <-
+  factor(usr_act_detail$event_type,
+         levels = evt_types_lv,
+         ordered = TRUE)
+head(usr_act_detail)
+
+str(usr_act_detail['event_type'])
+
+# create a new column as create_date from create_timestamp
+usr_act_detail$create_date <- as.Date(usr_act_detail$create_timestamp)
+# another data type conversions done in section 4 for event_type
+```
+####	**Data information of usr_act_detail (event_types.xlsx) **
+```{r}
+typeof(usr_act_detail)
+str(usr_act_detail)
+class(usr_act_detail)
+dim(usr_act_detail)
+```
+####	**Data information of property (property.csv) **
+```{r}
+typeof(property)
+str(property)
+class(property)
+dim(property)
+```
+####	**Data information of usr_act (user_activity.csv)**
+```{r}
+typeof(usr_act)
+str(usr_act)
+class(usr_act)
+dim(usr_act)
+```
+####	**Data information of evt_types (event_types.xlsx)**
+```{r}
+typeof(evt_types)
+str(evt_types)
+class(evt_types)
+dim(evt_types)
+```
+<b>usr_act_detail</b> is a data frame with 323893 obs of 7 vars. <i>event_type</i> is an ordered factor with 18 levels. The order is from <b>event_type</b>s' <i>step</i>. <b>property</b> is a data frame with 4930 obs of 17 vars. <b>usr_act</b> is a data frame with 323893 of 4 vars. <b>evt_types</b> is a data frame with 18 obs of 3 vars. <i>create_date</i> of <b>usr_act_detail</b> is converted from <i>create_timestamp</i> as date.
+<br>
+<br>
+
+##	**Tidy & Manipulate Data I **
+
+
+```{r}
+replace_0_na <- function(x) {
+  ifelse(x == 0, NA, x)
+}
+
+property <- property %>%
+  mutate(across(
+    c(
+      'deposit',
+      'monthly_rent',
+      'unit_area',
+      'building_floor_count'
+    ),
+    replace_0_na
+  ))
+
+
+# unit floor 225 outliers
+
+# check uniqueness for item_id
+length(unique(property$item_id)) == dim(property)[1]
+length(unique(property$district_uuid)) == dim(property)[1]
+length(unique(usr_act_detail$uesr_id)) == dim(usr_act_detail)[1]
+
+# unit floor -2 -1 0 may represent underground or ground floor
+
+```
+
+A function is created to replace 0 to NA which is applied to 4 cols (<i>deposit, monthly_rent, unit_area and building_floor_count</i>). Their values of 0 are replaced as those values are impossible to be 0 by definition. The 0-value will lead to calculating the mean wrongly. There is another check with the uniqueness for <i>item_id</i> which the result is passed as it is equal to the dimension of <b>property</b> data frame. Another two ID distinct no. is not equal to <b>property</b> and <b>usr_act_detail</b> dimension. The result is acceptable as they can be duplicated as the many-to-many relationship.
+<br>
+Unit floor (-2, -1, 0) may represent underground or ground floor. There is another unit floor of 225. It may be an outlier which will be handled in Scan II.
+<br>
+<br>
+
+## **Tidy & Manipulate Data II** 
+
+```{r}
+property <- property %>%
+  mutate(
+    weekly_rent = monthly_rent * 12 / 52,
+  )
+
+property <- property %>%
+  mutate(
+    deposit_rent_area_ratio = deposit / (monthly_rent * unit_area),
+  )
+
+```
+
+<i>weekly_rent</i> is calculated from monthly rent. <i>deposit_rent_area_ratio</i> is also calculated from <i>deposit</i> divided by product of <i>monthly_rent</i> and <i>unit_area</i>. It is used in step 9.
+
+<br>
+<br>
+
+##	**Scan I **
+
+```{r}
+sum(is.na(property$deposit))
+sum(is.na(property$monthly_rent))
+sum(is.na(property$room_qty))
+sum(is.na(property$unit_area))
+sum(is.na(property$has_elevator))
+sum(is.na(property$building_floor_count))
+sum(is.na(property$unit_floor))
+sum(is.na(property$has_storage_area))
+sum(is.na(property$property_age))
+
+district_deposit_mean <- property %>%
+  group_by(district_uuid) %>%
+  summarise(across(deposit, mean, .names="district_deposit_mean", na.rm = TRUE))
+
+property <- merge(x=property, y=district_deposit_mean, 
+                  by = "district_uuid" )
+
+property <- property %>%
+  mutate(cleaned_deposit = ifelse(
+    is.na(monthly_rent),
+    `district_deposit_mean`,
+    `monthly_rent`
+  ))
+
+district_monthly_rent_mean <- property %>%
+  group_by(district_uuid) %>%
+  summarise(across(monthly_rent, 
+                   mean, 
+                   .names = "district_monthly_rent_mean", 
+                   na.rm = TRUE))
+
+property <- merge(x = property, y = district_monthly_rent_mean,
+                  by = "district_uuid")
+
+property <- property %>%
+  mutate(cleaned_monthly_rent = ifelse(
+    is.na(monthly_rent),
+    `district_monthly_rent_mean`,
+    `monthly_rent`
+  ))
+
+```
+
+There are na values in <i>deposit, monthly_rent, room_qty, unit_area, has_elevator, building_floor_count, unit_floor, has_storage_area and property</i>. However, all values (except <i>deposit</i> and <i>monthly_rent</i>) can not be guessed or replaced by a calculated value as they should be from input. For <i>deposit</i> and <i>monthly_rent</i>, there are a <i>cleaned_deposit</i> and <i>cleaned_monthly_rent</i> by replacing na value with average value. They do not replace the original value because it is to keep na value aswe do not know why the na/0 value is filled.
+
+<br>
+<br>
+
+##	**Scan II**
+
+```{r}
+options(scipen = 999)
+property$cleaned_deposit %>% 
+  boxplot(main="Cleaned Deposit", ylab="deposit($)", col = "grey")
+property$cleaned_monthly_rent %>% 
+  boxplot(main="Cleaned Monthly Rent", ylab="rent($)", col = "grey")
+property$room_qty %>% 
+  boxplot(main="Room Qty", ylab="Qty", col = "grey")
+property$unit_area %>% 
+  boxplot(main="Unit Area", ylab="Area", col = "grey")
+property$building_floor_count %>% 
+  boxplot(main="Building Floor Count", ylab="Count", col = "grey")
+property$unit_floor %>% 
+  boxplot(main="Unit Floor", ylab="Floor", col = "grey")
+property$property_age %>% 
+  boxplot(main="Property Age", ylab="Age(year)", col = "grey")
+
+p <- property %>% select('cleaned_deposit', 
+                      'cleaned_monthly_rent', 
+                      'district_uuid') %>% group_by(district_uuid)
+
+results <-
+  mvn(
+    data = property %>% select('cleaned_deposit', 'cleaned_monthly_rent'),
+    multivariateOutlierMethod = "adj",
+    showOutliers = TRUE,
+    bc = TRUE, bcType="optimal"
+  )
+results$multivariateOutliers
+
+```
+
+There are 7 numeric attribute values. Using box spot can be spotted. They are <i>cleaned_deposit, cleaned_monthly_rent, room_qty, unit_area, building_floor_count, unit_floor and property_age</i>. Those outliers cannot be deleted, as there may be references for user activity tables. They cannot be replaced by mean value as well, because those values have their own meaning and the mean tells nothing to those attributes. Therefore, no action can be applied for those outliers. 
+<br>
+There are so many outliners for <i>clean_deposit</i> and <i>clean_monthly_rent</i> because they are in different districts. There may be a chance of higher value with the city districts. Also the higher unit area, the higher the deposit. 
+
+
+
+<br>
+<br>
+
+##	**Transform **
+
+```{r}
+scale_df1 <- scale(property['cleaned_deposit'], center = TRUE, scale = TRUE)
+head(scale_df1)
+hist(scale_df1)
+hist(log(scale_df1))
+
+```
+
+<i>cleaned_deposit</i> was chosen to be normalised. Scale function is used and centre and scale are true to perform z-score transformation. A histogram shows for the z-scored value, but it is left swifted. Therefore, a log operation was done to centre the histogram.
+
+
+<br>
+<br>
+
