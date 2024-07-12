@@ -1,0 +1,28 @@
+python3 dictionary_test_script.py . array sampleData500.txt analyse500.in
+python3 dictionary_test_script.py . linkedlist sampleData500.txt analyse500.in
+python3 dictionary_test_script.py . trie sampleData500.txt analyse500.in
+   
+python3 dictionary_test_script.py . array sampleData1k.txt analyse1k.in
+python3 dictionary_test_script.py . linkedlist sampleData1k.txt analyse1k.in
+python3 dictionary_test_script.py . trie sampleData1k.txt analyse1k.in
+   
+python3 dictionary_test_script.py . array sampleData5k.txt analyse5k.in
+python3 dictionary_test_script.py . linkedlist sampleData5k.txt analyse5k.in
+python3 dictionary_test_script.py . trie sampleData5k.txt analyse5k.in
+   
+python3 dictionary_test_script.py . array sampleData10k.txt analyse10k.in
+python3 dictionary_test_script.py . linkedlist sampleData10k.txt analyse10k.in
+python3 dictionary_test_script.py . trie sampleData10k.txt analyse10k.in
+   
+python3 dictionary_test_script.py . array sampleData50k.txt analyse50k.in
+python3 dictionary_test_script.py . linkedlist sampleData50k.txt analyse50k.in
+python3 dictionary_test_script.py . trie sampleData50k.txt analyse50k.in
+   
+python3 dictionary_test_script.py . array sampleData100k.txt analyse100k.in
+python3 dictionary_test_script.py . linkedlist sampleData100k.txt analyse100k.in
+python3 dictionary_test_script.py . trie sampleData100k.txt analyse100k.in
+
+
+python3 dictionary_test_script.py . array sampleData200k.txt test1.in
+python3 dictionary_test_script.py . linkedlist sampleData200k.txt test1.in
+python3 dictionary_test_script.py . trie sampleData200k.txt test1.in
