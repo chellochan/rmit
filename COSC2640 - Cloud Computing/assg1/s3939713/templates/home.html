@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<style>
+.label {
+    width: 100px
+}
+.row {
+    display: flex;
+}
+</style>
+<body>
+<form action="login" method="POST">
+<div>
+    <div class="row">
+        <div class="label">Email: </div><div><input type="text" name="email" required /></div>
+    </div>
+    <div class="row">
+        <div class="label">Password: </div><div><input type="text" name="password" required /></div>
+    </div>
+</div>
+<div>
+    <div class="row">
+        <div class="label"><input type="submit" value="Login"/></div>
+    </div>
+</div>
+<div>
+    <div class="row">
+        <div><a href="/register">Register</a></div>
+    </div>
+</div>
+<div>
+    <div class="row">
+        <div>{{ msg }}</div>
+    </div>
+</div>
+</form>
+</body>
+</html>
