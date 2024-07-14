@@ -17,6 +17,6 @@ Four Actions:
 python3 dictionary_file_based.py <approach> <data fileName> <command fileName> <output fileName>
 ```
 
- <approach> = <array | linkedlist | trie>
- 
-e.g. python3 dictionary_test_script.py . array sampleData500.txt analyse500.in
+- <approach> = <array | linkedlist | trie>
+
+- e.g. python3 dictionary_test_script.py . array sampleData500.txt analyse500.in
