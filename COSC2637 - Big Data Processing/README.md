@@ -45,21 +45,31 @@ This assignment gives students the chance to understand the Spark program princi
 
 ### Initialization
 1. Copy and paste the jar file to master node
+```bash
 scp s3939713_BDP_A3.jar jumphost:~/
 scp s3939713_BDP_A3.jar hadoop:~/
+```
 
 2. Prepare a plain HDFS file path
 
 ### Run spark-submit with input & output path in hadoop master node
+```bash
 spark-submit --class streaming.WordCount --master yarn --deploy-mode client s3939713_BDP_A3.jar <input_filepath_hdfs> <output_filepath_hdfs>
+```
 
 e.g.
+```bash
 spark-submit --class streaming.WordCount --master yarn --deploy-mode client s3939713_BDP_A3.jar hdfs:///input/ hdfs:///output/
+```
 
-## Testing
+### Testing
 Upload any text file to hdfs input path
 e.g.
+```bash
 hadoop fs -put test.txt /input/
+```
 
 Check with output
+```bash
 hadoop fs -cat /output/task*-*/part*
+```
