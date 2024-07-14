@@ -1,15 +1,15 @@
 # Assignment 1 Word Completion
 
 Three types:
-Array-Based Dictionary
-Linked-List-Based Dictionary
-Trie-Based Dictionary
+1. Array-Based Dictionary
+2. Linked-List-Based Dictionary
+3. Trie-Based Dictionary
 
 Four Actions:
-Construction (A)
-Searching (S)
-Deletion (D)
-Auto-completion (AC)
+1. Construction (A)
+2. Searching (S)
+3. Deletion (D)
+4. Auto-completion (AC)
 
 
 ## Usage
@@ -17,5 +17,6 @@ Auto-completion (AC)
 python3 dictionary_file_based.py <approach> <data fileName> <command fileName> <output fileName>
 ```
 
-<approach> = <array | linkedlist | trie>
+ <approach> = <array | linkedlist | trie>
+ 
 e.g. python3 dictionary_test_script.py . array sampleData500.txt analyse500.in
