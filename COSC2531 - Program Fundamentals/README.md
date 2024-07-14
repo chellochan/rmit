@@ -1,20 +1,27 @@
-# Assignment 1 Retail Management System
+# Assignment 1 - Retail Management System
 
 ## Usage
 ```bash
-python ProgFunA1_s3939713.py
+python assignment1/ProgFunA1_s3939713.py
 ```
 
-# Assignment 2 Retail Management System using OO paradigm
+> Spec: `assignment1/COSC2531_Assignment1.pdf`
+
+
+# Assignment 2 - Retail Management System using OO paradigm
 
 ## Usage
 ```bash
-python ProgFunA2_s3939713.py
+python assignment2/ProgFunA2_s3939713.py
 ```
 
-# Assignment 3 Python program using OO paradigm
+> Spec: `assignment2/COSC2531_Assignment2.pdf`
+
+# Assignment 3 - Python program using OO paradigm
 
 ## Usage
 ```bash
-python my_competition.py
+python assignment3/my_competition.py
 ```
+
+> Spec: `assignment3/COSC2531_FinalCodingChallenge.pdf`
