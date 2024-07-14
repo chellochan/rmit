@@ -1,4 +1,10 @@
-# Assignment 1 Word Completion
+# Algorithms and Analysis
+
+The main objective of this course is for you to acquire the tools and techniques necessary to propose practical algorithmic solutions to real-world problems which still allow strong theoretical bounds on time and space usage.
+
+## Assignment 1 - Word Completion
+
+> Spec: `assg1/Assignment1_Dictionary.pdf`
 
 Three types:
 1. Array-Based Dictionary
